@@ -1,26 +1,27 @@
 #include <QCoreApplication>
+#include "HttpServer.h"
+#include "RequestHandler.h"
 
-#include "httpServer/httpServer.h"
-#include "requestHandler.h"
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication a(argc, argv);
+	QCoreApplication a{argc,argv};
 
-    HttpServerConfig config;
-    config.host = QHostAddress::LocalHost;
-    config.port = 44387;
-    config.requestTimeout = 20;
-    config.responseTimeout = 5;
-    config.verbosity = HttpServerConfig::Verbose::All;
-    config.maxMultipartSize = 512 * 1024 * 1024;
-    config.errorDocumentMap[HttpStatus::NotFound] = "data/404_2.html";
-    config.errorDocumentMap[HttpStatus::InternalServerError] = "data/404_2.html";
-    config.errorDocumentMap[HttpStatus::BadGateway] = "data/404_2.html";
+	HttpServerConfig config;
+	config.host = QHostAddress::LocalHost;
+	config.port = 44387;
+	config.requestTimeout = 20;
+	config.responseTimeout = 5;
+	config.verbosity = HttpServerConfig::Verbose::All;
+	config.maxMultipartSize = 512 * 1024 * 1024;
+	config.errorDocumentMap[HttpStatus::NotFound] = "data/404_2.html";
+	config.errorDocumentMap[HttpStatus::InternalServerError] = "data/404_2.html";
+	config.errorDocumentMap[HttpStatus::BadGateway] = "data/404_2.html";
 
-    RequestHandler *handler = new RequestHandler();
-    HttpServer *server = new HttpServer(config, handler);
-    server->listen();
+	RequestHandler handler;
+	HttpServer server {config,&handler};
+	server.listen();
 
-    return a.exec();
+	return a.exec();
 }
+
