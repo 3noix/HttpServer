@@ -290,6 +290,8 @@ bool HttpRequest::parseHeader(QTcpSocket *socket, HttpResponse *response)
 // PARSE BODY /////////////////////////////////////////////////////////////////
 bool HttpRequest::parseBody(QTcpSocket *socket, HttpResponse *response)
 {
+	Q_UNUSED(response)
+
 	// Read as much data as is available
 	// Return false if no more data is available
 	QByteArray chunk = socket->read(expectedBodySize - buffer.size());

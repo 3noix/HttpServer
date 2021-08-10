@@ -138,6 +138,7 @@ void HttpConnection::read()
 		promise
 			.fail([=](const QPromiseTimeoutException &error) {
 				// Request timed out
+				Q_UNUSED(error)
 				response->setError(HttpStatus::RequestTimeout, "", false);
 				return nullptr;
 			})
@@ -187,6 +188,7 @@ void HttpConnection::read()
 // BYTES WRITTEN //////////////////////////////////////////////////////////////
 void HttpConnection::bytesWritten(qint64 bytes)
 {
+	Q_UNUSED(bytes)
 	bool closeConnection = false;
 
 	// Keep sending the responses until the buffer fills up
