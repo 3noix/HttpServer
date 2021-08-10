@@ -50,7 +50,7 @@ HttpConnection::~HttpConnection()
 void HttpConnection::createSocket(qintptr socketDescriptor)
 {
 	// If SSL is supported and configured, then create an instance of QSslSocket
-	if (sslConfig)
+	if (!sslConfig->isNull())
 	{
 		QSslSocket *sslSocket = new QSslSocket{};
 		sslSocket->setSslConfiguration(*sslConfig);
@@ -60,8 +60,9 @@ void HttpConnection::createSocket(qintptr socketDescriptor)
 		// Any errors in TLS handshake will be notified via this signal
 		QObject::connect(sslSocket, QOverload<const QList<QSslError> &>::of(&QSslSocket::sslErrors), this, &HttpConnection::sslErrors);
 	}
-	else
+	else {
 		socket = new QTcpSocket{};
+	}
 
 	if (!socket->setSocketDescriptor(socketDescriptor))
 	{
@@ -75,7 +76,7 @@ void HttpConnection::createSocket(qintptr socketDescriptor)
 		qDebug().noquote() << QString("New incoming connection from %1").arg(socket->peerAddress().toString());
 
 	// Begin TLS handshake if SSL is enabled
-	if (sslConfig) {dynamic_cast<QSslSocket*>(socket)->startServerEncryption();}
+	if (!sslConfig->isNull()) {dynamic_cast<QSslSocket*>(socket)->startServerEncryption();}
 	address = socket->peerAddress();
 
 	// Begin timer for read timeout, occurs in case the client fails to send full message in a specified amount of time

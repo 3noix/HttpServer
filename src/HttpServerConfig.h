@@ -42,10 +42,6 @@ struct HTTPSERVER_EXPORT HttpServerConfig
 
 	Verbose verbosity = Verbose::None;
 
-	QString sslKeyPath = "";
-	QByteArray sslKeyPassPhrase;
-	QString sslCertPath = "";
-
 	// Format errors as JSON,
 	// If true, then do that, if no error message is given, then do not put anything
 	//

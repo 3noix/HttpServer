@@ -25,6 +25,7 @@ class HTTPSERVER_EXPORT HttpServer : public QTcpServer
 		HttpServer& operator=(HttpServer &&other) = delete;
 		~HttpServer();
 
+		bool loadSslConfig(const QString &sslCertPath, const QString &sslKeyPath, const QByteArray &sslKeyPassPhrase);
 		bool listen();
 		void close();
 
@@ -42,11 +43,9 @@ class HTTPSERVER_EXPORT HttpServer : public QTcpServer
 
 
 	private:
-		void loadSslConfig();
-
 		HttpServerConfig config;
 		HttpRequestHandler *requestHandler = nullptr;
-		QSslConfiguration *sslConfig = nullptr;
+		QSslConfiguration sslConfig;
 		std::vector<HttpConnection*> connections;
 };
 
