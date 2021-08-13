@@ -34,11 +34,6 @@ SOURCES += \
 		HttpRequestRouter.cpp \
 		HttpResponse.cpp \
 		HttpServer.cpp \
-		middleware/CORS.cpp \
-		middleware/auth.cpp \
-		middleware/getArray.cpp \
-		middleware/getObject.cpp \
-		middleware/verifyJson.cpp \
 		util.cpp
 
 
