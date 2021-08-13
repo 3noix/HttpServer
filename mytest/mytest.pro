@@ -15,16 +15,10 @@ MOC_DIR = $$MODE/moc
 QT = core network
 
 
-INCLUDEPATH += $$(PROG_DIR)/QtPromise/include
-#INCLUDEPATH += $$(PROG_DIR)/QtPromise/src
-QMAKE_CXXFLAGS += -Wno-maybe-uninitialized
+include(../common.pri)
 
 INCLUDEPATH += ../src
-LIBS += ../src/release/libhttpServer.a
-
-#INCLUDEPATH += $$(QT_DIR)/Tools/mingw810_32/lib/gcc/i686-w64-mingw32/8.1.0/include/c++
-#INCLUDEPATH += $$(QT_DIR)/Tools/mingw810_32/i686-w64-mingw32/include
-#LIBS += $$(QT_DIR)/Tools/mingw810_32/i686-w64-mingw32/lib/libz.a
+LIBS += ../src/$$MODE/libhttpServer.a
 
 
 HEADERS +=  MyHttpServer.h
