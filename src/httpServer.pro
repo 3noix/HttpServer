@@ -23,7 +23,6 @@ include(../common.pri)
 
 HEADERS += \
 		HttpConnection.h \
-		HttpRequestHandler.h \
 		HttpResponse.h \
 		HttpServer.h
 

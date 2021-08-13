@@ -19,8 +19,8 @@ QT = core network
 include(../common.pri)
 
 
-HEADERS += RequestHandler.h
-SOURCES += main.cpp RequestHandler.cpp
+HEADERS += MyServer.h
+SOURCES += main.cpp MyServer.cpp
 
 
 INCLUDEPATH += ../src

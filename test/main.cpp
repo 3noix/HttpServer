@@ -1,6 +1,5 @@
 #include <QCoreApplication>
-#include "HttpServer.h"
-#include "RequestHandler.h"
+#include "MyServer.h"
 
 
 int main(int argc, char *argv[])
@@ -18,10 +17,8 @@ int main(int argc, char *argv[])
 	config.errorDocumentMap[HttpStatus::InternalServerError] = "data/404_2.html";
 	config.errorDocumentMap[HttpStatus::BadGateway] = "data/404_2.html";
 
-	RequestHandler handler;
-	HttpServer server {config,&handler};
+	MyServer server{config};
 	server.listen();
-
 	return a.exec();
 }
 

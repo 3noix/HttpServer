@@ -1,40 +1,17 @@
-#include "RequestHandler.h"
+#include "MyServer.h"
 
 
-RequestHandler::RequestHandler()
+MyServer::MyServer(const HttpServerConfig &config, QObject *parent) : HttpServer{config,parent}
 {
-	router.addRoute("GET", "^/users/(\\w*)/?$", this, &RequestHandler::handleGetUsername);
-	router.addRoute({"GET", "POST"}, "^/gzipTest/?$", this, &RequestHandler::handleGzipTest);
-	router.addRoute({"GET", "POST"}, "^/formTest/?$", this, &RequestHandler::handleFormTest);
-	router.addRoute("GET", "^/fileTest/(\\d*)/?$", this, &RequestHandler::handleFileTest);
-	router.addRoute("GET", "^/errorTest/(\\d*)/?$", this, &RequestHandler::handleErrorTest);
-	router.addRoute("GET", "^/asyncTest/(\\d*)/?$", this, &RequestHandler::handleAsyncTest);
+	this->addRoute("GET", "^/users/(\\w*)/?$", this, &MyServer::handleGetUsername);
+	this->addRoute({"GET", "POST"}, "^/gzipTest/?$", this, &MyServer::handleGzipTest);
+	this->addRoute({"GET", "POST"}, "^/formTest/?$", this, &MyServer::handleFormTest);
+	this->addRoute("GET", "^/fileTest/(\\d*)/?$", this, &MyServer::handleFileTest);
+	this->addRoute("GET", "^/errorTest/(\\d*)/?$", this, &MyServer::handleErrorTest);
+	this->addRoute("GET", "^/asyncTest/(\\d*)/?$", this, &MyServer::handleAsyncTest);
 }
 
-HttpPromise RequestHandler::handle(HttpDataPtr data)
-{
-	bool foundRoute = true;
-	HttpPromise promise = router.route(data, &foundRoute);
-	if (foundRoute) {return promise;}
-
-	if (data->request->mimeType().compare("application/json", Qt::CaseInsensitive) != 0) {
-		throw HttpException(HttpStatus::BadRequest, "Request body content type must be application/json");
-	}
-
-	QJsonDocument jsonDocument = data->request->parseJsonBody();
-	if (jsonDocument.isNull()) {
-		throw HttpException(HttpStatus::BadRequest, "Invalid JSON body");
-	}
-
-	QJsonObject object;
-	object["test"] = 5;
-	object["another test"] = "OK";
-
-	data->response->setStatus(HttpStatus::Ok, QJsonDocument(object));
-	return HttpPromise::resolve(data);
-}
-
-HttpPromise RequestHandler::handleGetUsername(HttpDataPtr data)
+HttpPromise MyServer::handleGetUsername(HttpDataPtr data)
 {
 	auto match = data->state["match"].value<QRegularExpressionMatch>();
 	QString username = match.captured(1);
@@ -45,7 +22,7 @@ HttpPromise RequestHandler::handleGetUsername(HttpDataPtr data)
 	return HttpPromise::resolve(data);
 }
 
-HttpPromise RequestHandler::handleGzipTest(HttpDataPtr data)
+HttpPromise MyServer::handleGzipTest(HttpDataPtr data)
 {
 	QString output = "read 24 bytes \
 			read 24 bytes = 48 \
@@ -69,7 +46,7 @@ HttpPromise RequestHandler::handleGzipTest(HttpDataPtr data)
 	return HttpPromise::resolve(data);
 }
 
-HttpPromise RequestHandler::handleFormTest(HttpDataPtr data)
+HttpPromise MyServer::handleFormTest(HttpDataPtr data)
 {
 	auto formFields = data->request->formFields();
 	auto formFiles = data->request->formFiles();
@@ -84,7 +61,7 @@ HttpPromise RequestHandler::handleFormTest(HttpDataPtr data)
 	return HttpPromise::resolve(data);
 }
 
-HttpPromise RequestHandler::handleFileTest(HttpDataPtr data)
+HttpPromise MyServer::handleFileTest(HttpDataPtr data)
 {
 	auto match = data->state["match"].value<QRegularExpressionMatch>();
 	int id = match.captured(1).toInt();
@@ -147,7 +124,7 @@ HttpPromise RequestHandler::handleFileTest(HttpDataPtr data)
 	return HttpPromise::resolve(data);
 }
 
-HttpPromise RequestHandler::handleErrorTest(HttpDataPtr data)
+HttpPromise MyServer::handleErrorTest(HttpDataPtr data)
 {
 	auto match = data->state["match"].value<QRegularExpressionMatch>();
 	int statusCode = match.captured(1).toInt();
@@ -156,7 +133,7 @@ HttpPromise RequestHandler::handleErrorTest(HttpDataPtr data)
 	return HttpPromise::resolve(data);
 }
 
-HttpPromise RequestHandler::handleAsyncTest(HttpDataPtr data)
+HttpPromise MyServer::handleAsyncTest(HttpDataPtr data)
 {
 	auto match = data->state["match"].value<QRegularExpressionMatch>();
 	int delay = match.captured(1).toInt();

@@ -2,10 +2,9 @@
 
 
 // CONSTRUCTEUR ET DESTRUCTEUR ////////////////////////////////////////////////
-HttpServer::HttpServer(const HttpServerConfig &config, HttpRequestHandler *requestHandler, QObject *parent) :
+HttpServer::HttpServer(const HttpServerConfig &config, QObject *parent) :
 	QTcpServer{parent},
-	config{config},
-	requestHandler{requestHandler}
+	config{config}
 {
 	this->setMaxPendingConnections(config.maxPendingConnections);
 }
@@ -37,6 +36,17 @@ bool HttpServer::listen()
 void HttpServer::close()
 {
 	QTcpServer::close();
+}
+
+// ADD ROUTE //////////////////////////////////////////////////////////////////
+void HttpServer::addRoute(QString method, QString regex, HttpFunc handler)
+{
+	router.addRoute(method, regex, handler);
+}
+
+void HttpServer::addRoute(std::vector<QString> methods, QString regex, HttpFunc handler)
+{
+	router.addRoute(methods, regex, handler);
 }
 
 // LOAD SSL CONFIG ////////////////////////////////////////////////////////////
@@ -113,6 +123,22 @@ bool HttpServer::loadSslConfig(const QString &sslCertPath, const QString &sslKey
 	return true;
 }
 
+// HANDLE /////////////////////////////////////////////////////////////////////
+HttpPromise HttpServer::handle(HttpDataPtr data)
+{
+	bool foundRoute = true;
+	HttpPromise promise = router.route(data, &foundRoute);
+	if (foundRoute) {return promise;}
+	return this->handleRequestNotManagedByRouter(data);
+}
+
+HttpPromise HttpServer::handleRequestNotManagedByRouter(HttpDataPtr data)
+{
+	QJsonObject obj{{"error","Route not handled by the server router"}};
+	data->response->setStatus(HttpStatus::BadRequest, QJsonDocument(obj));
+	return HttpPromise::resolve(data);
+}
+
 // INCOMING CONNECTION ////////////////////////////////////////////////////////
 void HttpServer::incomingConnection(qintptr socketDescriptor)
 {
@@ -146,7 +172,8 @@ void HttpServer::incomingConnection(qintptr socketDescriptor)
 		return;
 	}
 
-	HttpConnection *connection = new HttpConnection{&config, requestHandler, socketDescriptor, &sslConfig};
+	HttpFunc serverCallback = [this] (HttpDataPtr data) {return this->handle(data);};
+	HttpConnection *connection = new HttpConnection{&config, serverCallback, socketDescriptor, &sslConfig};
 	QObject::connect(connection, &HttpConnection::disconnected, this, &HttpServer::connectionDisconnected);
 	connections.push_back(connection);
 }

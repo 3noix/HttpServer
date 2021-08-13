@@ -12,10 +12,10 @@
 using QtPromise::QPromiseTimeoutException;
 using QtPromise::QPromise;
 using HttpDataPtr = std::shared_ptr<HttpData>;
-using HttpPromise = QPromise<std::shared_ptr<HttpData>>;
-using HttpFunc = std::function<HttpPromise(std::shared_ptr<HttpData> data)>;
-using HttpResolveFunc = const QtPromise::QPromiseResolve<std::shared_ptr<HttpData>> &;
-using HttpRejectFunc = const QtPromise::QPromiseReject<std::shared_ptr<HttpData>> &;
+using HttpPromise = QPromise<HttpDataPtr>;
+using HttpFunc = std::function<HttpPromise(HttpDataPtr)>;
+using HttpResolveFunc = const QtPromise::QPromiseResolve<HttpDataPtr> &;
+using HttpRejectFunc = const QtPromise::QPromiseReject<HttpDataPtr> &;
 
 Q_DECLARE_METATYPE(QRegularExpressionMatch);
 

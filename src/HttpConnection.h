@@ -5,9 +5,9 @@
 #include "HttpData.h"
 #include "HttpServerConfig.h"
 #include "HttpRequest.h"
-#include "HttpRequestHandler.h"
 #include "HttpResponse.h"
 #include "util.h"
+#include "const.h"
 
 #include <exception>
 #include <list>
@@ -26,7 +26,7 @@ class HTTPSERVER_EXPORT HttpConnection : public QObject
 	Q_OBJECT
 
 	public:
-		HttpConnection(HttpServerConfig *config, HttpRequestHandler *requestHandler, qintptr socketDescriptor,
+		HttpConnection(HttpServerConfig *config, HttpFunc serverCallback, qintptr socketDescriptor,
 			QSslConfiguration *sslConfig = nullptr, QObject *parent = nullptr);
 		HttpConnection(const HttpConnection &other) = delete;
 		HttpConnection(HttpConnection &&other) = delete;
@@ -56,7 +56,7 @@ class HTTPSERVER_EXPORT HttpConnection : public QObject
 
 		HttpRequest *currentRequest = nullptr;
 		HttpResponse *currentResponse = nullptr;
-		HttpRequestHandler *requestHandler = nullptr;
+		HttpFunc serverCallback;
 
 		// Responses are stored in a queue to support HTTP pipelining and sending multiple responses
 		std::queue<HttpResponse*> pendingResponses;

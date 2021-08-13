@@ -29,25 +29,25 @@ class HTTPSERVER_EXPORT HttpRequestRouter
 
 		// Allows registering member functions using addRoute(..., <CLASS>, &Class:memberFunction)
 		template <typename T>
-		void addRoute(QString method, QString regex, T *inst, HttpPromise (T::*handler)(HttpDataPtr data))
+		void addRoute(QString method, QString regex, T *inst, HttpPromise (T::*handler)(HttpDataPtr))
 		{
 			return addRoute(method, regex, std::bind(handler, inst, std::placeholders::_1));
 		}
 
 		template <typename T>
-		void addRoute(QString method, QString regex, T *inst, HttpPromise (T::*handler)(HttpDataPtr data) const)
+		void addRoute(QString method, QString regex, T *inst, HttpPromise (T::*handler)(HttpDataPtr) const)
 		{
 			return addRoute(method, regex, std::bind(handler, inst, std::placeholders::_1));
 		}
 
 		template <typename T>
-		void addRoute(std::vector<QString> methods, QString regex, T *inst, HttpPromise (T::*handler)(HttpDataPtr data))
+		void addRoute(std::vector<QString> methods, QString regex, T *inst, HttpPromise (T::*handler)(HttpDataPtr))
 		{
 			return addRoute(methods, regex, std::bind(handler, inst, std::placeholders::_1));
 		}
 
 		template <typename T>
-		void addRoute(std::vector<QString> methods, QString regex, T *inst, HttpPromise (T::*handler)(HttpDataPtr data) const)
+		void addRoute(std::vector<QString> methods, QString regex, T *inst, HttpPromise (T::*handler)(HttpDataPtr) const)
 		{
 			return addRoute(methods, regex, std::bind(handler, inst, std::placeholders::_1));
 		}

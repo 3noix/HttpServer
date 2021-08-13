@@ -2,10 +2,10 @@
 
 
 // CONSTRUCTEUR ET DESTRUCTEUR ////////////////////////////////////////////////
-HttpConnection::HttpConnection(HttpServerConfig *config, HttpRequestHandler *requestHandler, qintptr socketDescriptor, QSslConfiguration *sslConfig, QObject *parent) :
+HttpConnection::HttpConnection(HttpServerConfig *config, HttpFunc serverCallback, qintptr socketDescriptor, QSslConfiguration *sslConfig, QObject *parent) :
 	QObject{parent},
 	config{config},
-	requestHandler{requestHandler},
+	serverCallback{serverCallback},
 	sslConfig{sslConfig}
 {
 	timeoutTimer = new QTimer{this};
@@ -118,11 +118,11 @@ void HttpConnection::read()
 			qInfo().noquote() << QString("Received %1 request to %2 from %3").arg(currentRequest->method()).arg(currentRequest->uriStr()).arg(address.toString());
 
 		// Handle request and setup timeout timer if necessary
-		// Note: Wrap the handler in a promise so exceptions are handled correctly
+		// Note: Wrap the callback in a promise so exceptions are handled correctly
 		// Note: Create local copies of current request and response so they are captured by value in the lambda
 		auto request = currentRequest;
 		auto response = currentResponse;
-		auto promise = HttpPromise::resolve(httpData).then([=](HttpDataPtr data) {return requestHandler->handle(data);});
+		auto promise = HttpPromise::resolve(httpData).then(serverCallback);
 		if (config->responseTimeout > 0)
 			promise = promise.timeout(config->responseTimeout * 1000);
 

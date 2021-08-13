@@ -52,7 +52,7 @@ Building HttpServer
 
 Example
 =================
-See [here](https://github.com/addisonElliott/HttpServer/blob/master/test/requestHandler.cpp) for example code using HttpServer.
+See [here](https://github.com/addisonElliott/HttpServer/blob/master/test/MyServer.cpp) for example code using HttpServer.
 
 Roadmap & Bugs
 =================
