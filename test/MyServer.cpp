@@ -112,10 +112,6 @@ HttpPromise MyServer::handleFileTest(HttpDataPtr data)
 			data->response->sendFile("data/colorPage.png");
 			break;
 
-		case 12:
-			data->response->sendFile("data/presentation.pptx");
-			break;
-
 		default:
 			throw HttpException(HttpStatus::BadRequest);
 	}
