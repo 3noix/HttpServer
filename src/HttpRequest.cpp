@@ -13,11 +13,7 @@ HttpRequest::~HttpRequest()
 	formFiles_.clear();
 
 	// Delete temporary form data (should always be deleted while parsing, but this may occur if an error happens)
-	if (tmpFormData)
-	{
-		delete tmpFormData;
-		tmpFormData = nullptr;
-	}
+	if (tmpFormData) {delete tmpFormData;}
 }
 
 
@@ -457,12 +453,12 @@ bool HttpRequest::parseMultiFormBody(QTcpSocket *socket, HttpResponse *response)
 		}
 
 		// Construct temporary form data
-		tmpFormData = new TemporaryFormData();
+		tmpFormData = new TemporaryFormData{};
 		tmpFormData->name = match.captured(1);
 		tmpFormData->filename = match.captured(2);
 		if (!tmpFormData->filename.isEmpty())
 		{
-			tmpFormData->file = new QTemporaryFile();
+			tmpFormData->file = new QTemporaryFile{};
 			tmpFormData->file->open();
 		}
 

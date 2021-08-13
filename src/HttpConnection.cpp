@@ -24,7 +24,6 @@ HttpConnection::~HttpConnection()
 {
 	socket->abort();
 	delete socket;
-	delete timeoutTimer;
 
 	// Delete pending responses
 	while (!pendingResponses.empty()) {pendingResponses.pop();}
@@ -33,17 +32,8 @@ HttpConnection::~HttpConnection()
 	for (auto it : data) {it.second->finished = true;}
 	data.clear();
 
-	if (currentRequest)
-	{
-		delete currentRequest;
-		currentRequest = nullptr;
-	}
-
-	if (currentResponse)
-	{
-		delete currentResponse;
-		currentResponse = nullptr;
-	}
+	if (currentRequest) {delete currentRequest;}
+	if (currentResponse) {delete currentResponse;}
 }
 
 // CREATE SOCKET //////////////////////////////////////////////////////////////

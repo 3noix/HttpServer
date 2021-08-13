@@ -140,7 +140,7 @@ HttpPromise RequestHandler::handleFileTest(HttpDataPtr data)
 			break;
 
 		default:
-			throw new HttpException(HttpStatus::BadRequest);
+			throw HttpException(HttpStatus::BadRequest);
 	}
 
 	data->response->setStatus(HttpStatus::Ok);

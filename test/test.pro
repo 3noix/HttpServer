@@ -7,7 +7,7 @@ CONFIG(release, debug|release) {
 
 TEMPLATE = app
 TARGET = httpServerTest
-CONFIG += c++11 console
+CONFIG += c++17 console
 DESTDIR = $$MODE
 OBJECTS_DIR = $$MODE/objects
 MOC_DIR = $$MODE/moc
