@@ -9,7 +9,7 @@
 #include <QHash>
 #include <QtCore/qglobal.h>
 #include <QtMath>
-#include <zlib.h>
+#include "../3rdparty/zlib/include/zlib.h"
 
 #if defined(HTTPSERVER_LIBRARY)
 #define HTTPSERVER_EXPORT Q_DECL_EXPORT
