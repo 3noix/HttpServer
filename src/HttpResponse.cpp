@@ -163,7 +163,7 @@ void HttpResponse::compressBody(int compressionLevel)
 }
 
 // SEND FILE //////////////////////////////////////////////////////////////////
-void HttpResponse::sendFile(QString filename, QString mimeType, QString charset, int len, int compressionLevel, QString attachmentFilename, int cacheTime)
+bool HttpResponse::sendFile(QString filename, QString mimeType, QString charset, int len, int compressionLevel, QString attachmentFilename, int cacheTime)
 {
 	QFile file{filename};
 	if (!file.open(QIODevice::ReadOnly))
@@ -172,12 +172,12 @@ void HttpResponse::sendFile(QString filename, QString mimeType, QString charset,
 			qInfo().noquote() << QString("Unable to open file to be sent (%1): %2").arg(filename).arg(file.errorString());
 		}
 
-		return;
+		return false;
 	}
 
 	if (mimeType.isEmpty()) {mimeType = mimeDatabase.mimeTypeForFile(filename, QMimeDatabase::MatchExtension).name();}
-
 	this->sendFile(&file, mimeType, charset, len, compressionLevel, attachmentFilename, cacheTime);
+	return true;
 }
 
 void HttpResponse::sendFile(QIODevice *device, QString mimeType, QString charset, int len, int compressionLevel, QString attachmentFilename, int cacheTime)
