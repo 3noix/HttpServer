@@ -5,4 +5,5 @@ CONFIG += c++17
 # a lot of maybe-uninitialized warnings from QtPromise
 QMAKE_CXXFLAGS += -Wno-maybe-uninitialized
 
-LIBS += ../3rdparty/zlib/lib/libz.a
+win32: LIBS += ../3rdparty/zlib/lib/libz.a
+unix: LIBS += -lz
